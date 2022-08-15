@@ -1,0 +1,53 @@
+[gd_scene format=2]
+
+[node name="CenterContainer" type="CenterContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -255.5
+margin_top = -238.0
+margin_right = 255.5
+margin_bottom = 238.0
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+margin_right = 511.0
+margin_bottom = 476.0
+
+[node name="LeftPanel" type="PanelContainer" parent="HSplitContainer"]
+margin_right = 177.0
+margin_bottom = 476.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/LeftPanel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 170.0
+margin_bottom = 469.0
+
+[node name="Button" type="Button" parent="HSplitContainer/LeftPanel/VBoxContainer"]
+margin_right = 163.0
+margin_bottom = 20.0
+text = "My mom is very cute :3"
+
+[node name="MenuButton" type="MenuButton" parent="HSplitContainer/LeftPanel/VBoxContainer"]
+margin_top = 24.0
+margin_right = 163.0
+margin_bottom = 44.0
+text = "I am very strong too)"
+
+[node name="CheckBox" type="CheckBox" parent="HSplitContainer/LeftPanel/VBoxContainer"]
+margin_top = 48.0
+margin_right = 163.0
+margin_bottom = 72.0
+text = "Check Me"
+
+[node name="RightPanel" type="PanelContainer" parent="HSplitContainer"]
+margin_left = 189.0
+margin_right = 511.0
+margin_bottom = 476.0
+
+[node name="ColorPicker" type="ColorPicker" parent="HSplitContainer/RightPanel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 315.0
+margin_bottom = 469.0
