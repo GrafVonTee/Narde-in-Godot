@@ -12,7 +12,7 @@ enum Placements {
 export (PackedScene) var die_scene
 
 var cubes_array = []
-const dice_offset = 33
+const dice_offset = 35
 var cubes_count = 2
 var can_double = true
 export var current_placement = Placements.LINE
@@ -20,8 +20,7 @@ var is_wait_for_roll = true
 
 
 func init_new_cubes():
-	clear_cubes_array()
-	for i in range(cubes_count):
+	for _i in range(cubes_count):
 		var cube = die_scene.instance()
 		add_child(cube)
 		cubes_array.append(cube)
@@ -99,6 +98,7 @@ func double_cubes():
 
 
 func dice_rolled():
+	clear_cubes_array()
 	init_new_cubes()
 	
 	if (not cubes_count == 1) \
@@ -115,6 +115,8 @@ func dice_rolled():
 			
 	stop_dice_animation()
 	emit_signal("rolled", self)
+	
+	
 
 
 func place_dice(index):

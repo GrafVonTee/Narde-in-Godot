@@ -49,6 +49,4 @@ wait_time = 2.0
 one_shot = true
 script = ExtResource( 6 )
 
-[connection signal="rolled" from="DiceBlack" to="." method="_on_Dice_rolled"]
-[connection signal="rolled" from="DiceWhite" to="." method="_on_Dice_rolled"]
 [connection signal="timeout" from="WaitTimer" to="WaitTimer" method="_on_timeout"]

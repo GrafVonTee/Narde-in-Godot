@@ -37,13 +37,13 @@ func _ready():
 	notify("game_starts")
 	
 
-func _input(event):
+func _input(_event):
 	if not game_started:
 		if Input.is_action_just_pressed("ui_accept"):
 			start_game()
-#	else:
-#		if Input.is_action_just_pressed("reroll_dice"):
-#			reroll_dice()
+	else:
+		if Input.is_action_just_pressed("reroll_dice"):
+			reroll_dice()
 
 
 func start_game():
