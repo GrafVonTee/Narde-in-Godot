@@ -16,33 +16,41 @@ const dice_offset = 33
 var cubes_count = 2
 var can_double = true
 export var current_placement = Placements.LINE
-#var is_wait_for_roll = true
+var is_wait_for_roll = true
 
 
 func init_new_cubes():
+	clear_cubes_array()
 	for i in range(cubes_count):
 		var cube = die_scene.instance()
 		add_child(cube)
 		cubes_array.append(cube)
 
 
-func make_once():
+func make_single():
 	can_double = false
-	change_count_of_dice(1)
-	init_new_cubes()
+	cubes_count = 1
 	
 	
-func make_doubled():
+func make_normal():
 	can_double = true
-	change_count_of_dice(2)
-	init_new_cubes()
-
-
-func change_count_of_dice(num):
+	cubes_count = 2
+	
+	
+func clear_cubes_array():
 	for cube in cubes_array:
 		cube.queue_free()
 	cubes_array.clear()
-	cubes_count = num
+	
+	
+func hide_dice():
+	is_wait_for_roll = false
+	visible = false
+	
+	
+func show_dice():
+	is_wait_for_roll = true
+	visible = true
 	
 
 func is_timer_stopped():
@@ -61,12 +69,14 @@ func get_one_die():
 	return cubes_array[0]
 
 
-func make_all_dice_active():
+func make_dice_active():
 	for cube in cubes_array:
 		cube.make_die_allowed_to_use()
 
 
 func roll_dice():
+	if not is_wait_for_roll:
+		return
 	$RollWaitTimer.start()
 	play_animation_rerolling_dice()
 
@@ -89,7 +99,6 @@ func double_cubes():
 
 
 func dice_rolled():
-	change_count_of_dice(cubes_count)
 	init_new_cubes()
 	
 	if (not cubes_count == 1) \

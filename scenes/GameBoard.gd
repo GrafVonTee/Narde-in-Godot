@@ -14,8 +14,10 @@ enum WhichPlayerMove {
 #var available_selections = []
 #var destination_select = null
 #var available_destinations = {}
+var game_started = false
 
 var current_player = WhichPlayerMove.NOBODY
+var cur_cubes = []
 
 #var current_available_moves = []
 #var used_moves = []
@@ -26,48 +28,115 @@ onready var players_dice = [$DiceWhite, $DiceBlack]
 #export var maximum_value_of_chips = 15
 #var chip_picked_from_head = false
 
+### Main Section
 
 func _ready():
 	set_process(false)
 	connect_dice()
 	randomize()
+	notify("game_starts")
 	
+
+func _input(event):
+	if not game_started:
+		if Input.is_action_just_pressed("ui_accept"):
+			start_game()
+#	else:
+#		if Input.is_action_just_pressed("reroll_dice"):
+#			reroll_dice()
+
+
+func start_game():
+	game_started = true
+	make_all_dice_single()
+	choose_player()
+
+
+func choose_player():
+	$TextLabel.set_label_text("Let's Choose the Player...")
+	reroll_dice()
+
+
+func set_player():
+	if cur_cubes[0].get_value() == cur_cubes[1].get_value():
+		notify("dice_are_equal")
+		$WaitTimer.turn_on(funcref(self, "reroll_dice"))
+	else:
+		current_player = int(cur_cubes[0].get_value() > cur_cubes[1].get_value())
+		notify("player_chosen")
+		$WaitTimer.turn_on(funcref(self, "_on_player_chosen_dice"))
+	
+	
+func _on_player_chosen_dice():
+	make_all_dice_normal()
+	alternate_the_dice()
+	reroll_dice()
+	
+	
+func make_player_move():
+	notify("move_starts")
+	
+### Dice Section
 	
 func connect_dice():
 	for d in players_dice:
 		d.connect("rolled", self, "_dice_rolled")
 
 
-func _input(event):
-	if Input.is_action_just_pressed("reroll_dice"):
+func reroll_dice():
+	cur_cubes.clear()
+	if current_player != WhichPlayerMove.NOBODY:
+		players_dice[current_player].roll_dice()
+	else:
 		$DiceWhite.roll_dice()
+		$DiceBlack.roll_dice()
 
 
-func _dice_rolled(dice):
-	pass
+func _dice_rolled(dice: DiceUI):
+	cur_cubes.append_array(dice.cubes_array)
+	transmitter()
 
 
-#func _process(delta):
-#	match current_player:
-#		WhichPlayerMove.NOBODY: set_player()
-#		_: make_move()
+func make_all_dice_single():
+	$DiceWhite.make_single()
+	$DiceBlack.make_single()
+	
+	
+func make_all_dice_normal():
+	$DiceBlack.make_normal()
+	$DiceWhite.make_normal()
+	
+
+func alternate_the_dice():
+	players_dice[current_player].show_dice()
+	players_dice[WhichPlayerMove.BLACK - current_player].hide_dice()
 
 
-#func set_player():
-#	if $WhiteDice.is_timer_stopped():
-#		$TextLabel.set_label_text("Let's Choose the Player...")
-#		current_player = choose_player()
-#		roll_the_dice()
+func transmitter(): # Function which tell what we need to do with the dice
+	if cur_cubes.size() < 2:
+		return
+	if current_player == WhichPlayerMove.NOBODY:
+		set_player()
+	else:
+		make_player_move()
 
+### Notifiers Section
 
-#func choose_player() -> int:
-#	if current_available_moves.size() == 0:
-#		return WhichPlayerMove.NOBODY
-#	if current_available_moves.size() > 2:
-#		return WhichPlayerMove.NOBODY
-#	else:
-#		return int(current_available_moves[0].value < current_available_moves[1].value)
-
+func notify(message: String):
+	match message:
+		"dice_are_equal":
+			$TextLabel
+			.set_label_text("Oops, dice are equal!\nLet's try another once")
+		"player_chosen":
+			$TextLabel.set_label_text("The "
+			+ ("WHITE" if current_player == WhichPlayerMove.WHITE else "BLACK")
+			+ " player starts first!")
+		"game_starts":
+			$TextLabel.set_label_text("Press Enter to Start the Game")
+		"move_starts":
+			$TextLabel.set_label_text("The "
+			+ ("WHITE" if current_player == WhichPlayerMove.WHITE else "BLACK")
+			+ " is thinking about the move...")
 
 #func determine_chips_in_the_home():
 #	if is_in_the_home[current_player]:

@@ -2,7 +2,7 @@ extends Node2D
 
 class_name Cube
 
-var value: int
+var value: int setget set_value, get_value
 var is_used = false
 
 
@@ -10,9 +10,13 @@ func _ready():
 	roll_die()
 	
 	
-func set_value(val):
+func set_value(val: int) -> void:
 	value = val
 	$Sprite.frame = val
+	
+func get_value() -> int:
+	return value
+	
 
 func roll_die():
 	value = randi() % 6
